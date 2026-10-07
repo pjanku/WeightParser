@@ -10,7 +10,7 @@ Z každého PDF ve vybrané složce vytáhne klíčové údaje a uloží je do j
 3. Z textu každého PDF vyčte:
    - **Číslo váženky** – např. `2026/0031966` → `31966`
    - **Kód dodavatele** – kód ve formátu písmeno + číslice, např. `E201`
-   - **Datum** – např. `02.10.2026 14:07`
+   - **Datum** – bez času, např. `02.10.2026 14:07` → `02.10.2026`
    - **Netto** – hodnotu `Netto [kg]` převede na tuny (např. `27480` → `27.480`)
 4. Výsledky seřadí podle čísla váženky a uloží do souboru `vazenky.xlsx`
    ve stejné složce, kde jsou PDF.

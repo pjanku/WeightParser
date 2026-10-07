@@ -1,4 +1,5 @@
 import re
+from datetime import date, datetime
 from pathlib import Path
 from tkinter import Tk, filedialog
 
@@ -100,24 +101,21 @@ def extract_supplier_code(text: str) -> str:
     raise ValueError("Kód dodavatele nebyl nalezen.")
 
 
-def extract_date(text: str) -> str:
+def extract_date(text: str) -> date:
     """
-    Najde datum a čas.
+    Najde datum (případný čas za ním ignoruje).
 
     Např.:
-        02.10.2026 14:07
+        02.10.2026 14:07 -> 2026-10-02
     """
 
     match = re.search(
-        r"\b"
-        r"(\d{1,2}\.\d{1,2}\.\d{4}"
-        r"(?:\s+\d{1,2}:\d{2})?)"
-        r"\b",
+        r"\b(\d{1,2}\.\d{1,2}\.\d{4})\b",
         text,
     )
 
     if match:
-        return match.group(1)
+        return datetime.strptime(match.group(1), "%d.%m.%Y").date()
 
     raise ValueError("Datum nebylo nalezeno.")
 
@@ -199,8 +197,13 @@ def create_excel(data: list[dict], output_path: Path):
             ]
         )
 
-    # Netto zobrazíme na 3 desetinná místa.
+    # Datum bez času, netto na 3 desetinná místa.
     for row in range(2, sheet.max_row + 1):
+        sheet.cell(
+            row=row,
+            column=3
+        ).number_format = "DD.MM.YYYY"
+
         sheet.cell(
             row=row,
             column=4
@@ -266,7 +269,7 @@ def main():
                 f"  OK: "
                 f"{item['number']} | "
                 f"{item['supplier_code']} | "
-                f"{item['date']} | "
+                f"{item['date']:%d.%m.%Y} | "
                 f"{item['netto']:.3f} t"
             )
 
