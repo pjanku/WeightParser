@@ -42,11 +42,19 @@ jobs:
           path: dist/Vazenky.exe
           if-no-files-found: error
 
+      # Zip kvůli prohlížečům/SmartScreen, které blokují stažení samotného .exe
+      - name: Create ZIP
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          Compress-Archive -Path dist/Vazenky.exe -DestinationPath dist/Vazenky-Windows.zip
+
       # Release jen pro tagy v*; asset je ve veřejném repu ke stažení bez přihlášení
       - name: Publish release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/Vazenky.exe
+          files: |
+            dist/Vazenky.exe
+            dist/Vazenky-Windows.zip
           fail_on_unmatched_files: true
           generate_release_notes: true
